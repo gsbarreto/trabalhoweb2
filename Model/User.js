@@ -5,12 +5,11 @@ module.exports = class User extends MongoDocument {
     super(data);
     this.name = data.name;
     this.password = md5("trab@W3B" + data.password);
-    this.admin = false;
+    this.admin = data.admin;
     this.username = data.username;
     this.email = data.email;
     this._id = data._id;
     this.collection = "users";
-    console.log(data);
   }
 
   static find(query = {}, limit = 5) {

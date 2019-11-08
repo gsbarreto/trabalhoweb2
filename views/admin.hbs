@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/admin" method="post" ectype="multipart/form-data">
+        <ul>
+            {{#each mensagem as |erro|}}
+            <li>{{erro}}</li>
+            {{/each}}
+        </ul>
+        <label for="username">Digite o titulo</label>
+        <input type="text" name="title">
+        <label for="body">Digite o corpo do post</label>
+        <textarea name="body" id="" cols="30" rows="10"></textarea>
+        <input type="file" name="file" />
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+
+</html>
