@@ -6,20 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        .post {
+            border-bottom: 1px gray solid;
+        }
+
+        .post h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .post h3 {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .post p {
+            font-size: 14px;
+        }
+
+        * {
+            font-family: "Ubuntu", "Roboto", sans-serif;
+        }
+    </style>
 </head>
 
 <body>
-    <div>
-        <form action="/feed" method="get">
-            <input type="text" name="search">
-            <button type="submit">Pesquisar</button>
-        </form>
-        {{#each items as |item|}}
-        <h1>{{item.title}}</h1>
-        <h2>Author: {{item.author}}</h2>
+
+    <form action="/feed" method="get">
+        <input type="text" name="search">
+        <button type="submit">Pesquisar</button>
+    </form>
+    <a href="/admin">Painel administrativo</a>
+    <a href="/logout">Logout</a>
+    <h1>Posts</h1>
+    {{#each items as |item|}}
+    <div class="post">
+        <h2>{{item.title}}</h2>
+        <h3>Autor: {{item.author}}</h3>
         <p>{{item.body}}</p>
-        {{/each}}
     </div>
+    {{/each}}
+
 </body>
 
 </html>

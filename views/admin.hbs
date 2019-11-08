@@ -6,20 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        * {
+            font-family: "Ubuntu", "Roboto", sans-serif;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+        }
+
+        .erro {
+            border: 1px solid #ff6a61;
+            background: #ffbdb9;
+            ;
+            padding-bottom: 10px;
+        }
+
+        .erro li {
+            padding-left: 10px;
+        }
+    </style>
 </head>
 
 <body>
+    <h1>Painel de administração</h1>
+
+    <a href="/feed">Ir para o Feed</a>
+    <a href="/logout">Logout</a>
     <form action="/admin" method="post" ectype="multipart/form-data">
-        <ul>
+        {{#if mensagem}}
+        <ul class="erro">
+            <h3>Erro</h3>
             {{#each mensagem as |erro|}}
             <li>{{erro}}</li>
             {{/each}}
         </ul>
+        {{/if}}
         <label for="username">Digite o titulo</label>
         <input type="text" name="title">
         <label for="body">Digite o corpo do post</label>
         <textarea name="body" id="" cols="30" rows="10"></textarea>
-        <input type="file" name="file" />
         <button type="submit">Enviar</button>
     </form>
 </body>

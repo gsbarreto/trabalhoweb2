@@ -26,14 +26,10 @@ const segredoAdmin = "818121610e1b3dd2f7d2d83c7918bc19";
 
 function verifyJWT(req, res, next) {
   var token = req.cookies && req.cookies.token ? req.cookies.token : undefined;
-  if (!token)
-    return res.status(401).send({ auth: false, message: "No token provided." });
+  if (!token) return res.status(401).send("Usuário não autenticado");
 
   jwt.verify(token, segredo, function(err, decoded) {
-    if (err)
-      return res
-        .status(500)
-        .send({ auth: false, message: "Failed to authenticate token." });
+    if (err) return res.status(500).send("Usuário não autenticado");
 
     req.userId = decoded.id;
     next();
@@ -42,14 +38,10 @@ function verifyJWT(req, res, next) {
 
 function verifyJWTAdmin(req, res, next) {
   var token = req.cookies && req.cookies.admin ? req.cookies.admin : undefined;
-  if (!token)
-    return res.status(401).send({ auth: false, message: "No token provided." });
+  if (!token) return res.status(401).send("Usuário sem permissão");
 
   jwt.verify(token, segredoAdmin, function(err, decoded) {
-    if (err)
-      return res
-        .status(500)
-        .send({ auth: false, message: "Failed to authenticate token." });
+    if (err) return res.status(500).send("Usuário sem permissão");
 
     req.userId = decoded.id;
     next();
@@ -64,7 +56,7 @@ router.route("/admin").get(verifyJWTAdmin, (req, res) => {
   res.render("admin", { user: req.cookies.userid });
 });
 
-router.route("/admin").post(upload.single("file"), (req, res) => {
+router.route("/admin").post(verifyJWT, (req, res) => {
   if (req.body) {
     let mensagem = [];
     if (req.body.title === "" || req.body.title === null) {
@@ -77,7 +69,7 @@ router.route("/admin").post(upload.single("file"), (req, res) => {
       mensagem.push("Author não informado!");
     }
     if (mensagem.length > 0) {
-      res.render("cadastro", { mensagem });
+      res.render("admin", { mensagem });
     } else {
       console.log("FILE", req.file);
       console.log("BODY", req.body);
@@ -186,7 +178,7 @@ router.post("/login", (req, res) => {
           res.status(200).redirect("/feed");
         } else {
           res.render("login", {
-            mensagem: ["Dados de cadastro incorretos!"]
+            mensagem: ["Dados de login incorretos!"]
           });
         }
       });

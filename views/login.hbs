@@ -6,20 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+        }
+
+        form {
+            padding-top: 80px;
+            margin: 0 auto;
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 150px;
+        }
+
+        .erro {
+            border: 1px solid #ff6a61;
+            background: #ffbdb9;
+            padding-bottom: 10px;
+        }
+
+        .erro li {
+            padding-left: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <form action="/login" method="post">
-        <ul>
+
+        {{#if mensagem}}
+        <ul class="erro">
+            <h3>Erro</h3>
             {{#each mensagem as |erro|}}
             <li>{{erro}}</li>
             {{/each}}
         </ul>
+        {{/if}}
+
         <label for="username">Digite um nome de usuário</label>
         <input type="text" name="username">
         <label for="password">Digite uma senha</label>
         <input type="password" name="password">
         <button type="submit">Enviar</button>
+
+        <a href="/cadastro">Se registrar na plataforma</a>
     </form>
 </body>
 

@@ -6,45 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: row;
-        }
-
-        form {
-            padding-top: 80px;
-            margin: 0 auto;
-            width: 30%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            height: 150px;
-        }
-
-        .erro {
-            border: 1px solid #ff6a61;
-            background: #ffbdb9;
-            margin-top: 150px;
-            padding-bottom: 10px;
-        }
-
-        .erro li {
-            padding-left: 10px;
-        }
-    </style>
 </head>
 
 <body>
     <form action="/cadastro" method="post">
-        {{#if mensagem}}
-        <ul class="erro">
-            <h3>Erro</h3>
+        <ul>
             {{#each mensagem as |erro|}}
             <li>{{erro}}</li>
             {{/each}}
         </ul>
-        {{/if}}
         <label for="name">Digite seu nome</label>
         <input type="text" name="name">
         <label for="email">Digite seu email</label>
@@ -56,8 +26,6 @@
         <label for="password2">Repita a senha</label>
         <input type="password" name="password2">
         <button type="submit">Enviar</button>
-
-        <a href="/login">Voltar para a tela de login</a>
     </form>
 </body>
 
