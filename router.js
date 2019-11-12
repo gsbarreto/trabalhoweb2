@@ -6,18 +6,20 @@ const md5 = require("md5");
 const jwt = require("jsonwebtoken");
 var mongo = require("mongodb");
 const multer = require("multer");
+const path = require("path");
 
-let storage = multer.diskStorage({
-  destination: function(req, file, callback) {
-    callback(null, "./public/imagens/");
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "/public/", "uploads"));
   },
-  filename: function(req, file, callback) {
-    callback(
+  filename: (req, file, cb) => {
+    cb(
       null,
       file.fieldname + "-" + Date.now() + path.extname(file.originalname)
     );
   }
 });
+var upload = multer({ storage: storage });
 
 const segredo = "ffb22dc9665a677bcbd8fa2bc668e646";
 const segredoAdmin = "818121610e1b3dd2f7d2d83c7918bc19";
@@ -89,62 +91,53 @@ router.route("/admin").get(verifyJWTAdmin, (req, res) => {
   res.render("admin", { user: req.cookies.userid });
 });
 
-router.route("/admin").post(verifyJWT, (req, res) => {
-  if (req.body) {
-    let mensagem = [];
-    if (req.body.title === "" || req.body.title === null) {
-      mensagem.push("O campo titulo é obrigatório!");
-    }
-    if (req.body.body === "" || req.body.body === null) {
-      mensagem.push("O campo corpo é obrigatório!");
-    }
-    if (req.cookies.userid === "" || req.cookies.userid === null) {
-      mensagem.push("Author não informado!");
-    }
+router
+  .route("/admin")
+  .post(verifyJWTAdmin, upload.single("imagem"), (req, res) => {
+    console.log("BODY", req.body);
+    console.log("IMAGEM", req.file);
+    if (req.body) {
+      let mensagem = [];
+      if (
+        req.body.title === "" ||
+        req.body.title === null ||
+        req.body.title === undefined
+      ) {
+        mensagem.push("O campo titulo é obrigatório!");
+      }
+      if (
+        req.body.body === "" ||
+        req.body.body === null ||
+        req.body.body === undefined
+      ) {
+        mensagem.push("O campo corpo é obrigatório!");
+      }
+      if (
+        req.cookies.userid === "" ||
+        req.cookies.userid === null ||
+        req.cookies.userid === undefined
+      ) {
+        mensagem.push("Author não informado!");
+      }
 
-    if (req.body.imagem !== undefined && req.body.imagem !== "") {
-      let upload = multer({
-        storage: storage,
-        fileFilter: function(req, file, callback) {
-          let ext = path.extname(file.originalname);
-          if (
-            ext !== ".png" &&
-            ext !== ".jpg" &&
-            ext !== ".gif" &&
-            ext !== ".jpeg"
-          ) {
-            return callback(
-              res.end("Por favor, coloque apenas imagens!"),
-              null
-            );
-          }
-          const nomearquivo = file.originalname;
-          callback(null, true);
-        }
-      }).single("imagem");
+      if (mensagem.length > 0) {
+        res.render("admin", { mensagem });
+      } else {
+        console.log("FILE", req.file);
+        console.log("BODY", req.body);
+        let newPost = new PostDAO({
+          title: req.body.title,
+          body: req.body.body,
+          author: req.cookies.userid,
+          image: req.file !== undefined ? "/uploads/" + req.file.filename : null
+        });
 
-      upload(req, res, () => {
-        console.log("UPADO", req.file);
-      });
+        newPost.save().then(user => {
+          res.redirect("/login");
+        });
+      }
     }
-
-    if (mensagem.length > 0) {
-      res.render("admin", { mensagem });
-    } else {
-      console.log("FILE", req.file);
-      console.log("BODY", req.body);
-      let newPost = new PostDAO({
-        title: req.body.title,
-        body: req.body.body,
-        author: req.cookies.userid
-      });
-
-      newPost.save().then(user => {
-        res.redirect("/login");
-      });
-    }
-  }
-});
+  });
 
 router.get("/cadastro", (req, res) => {
   res.render("cadastro");

@@ -5,6 +5,7 @@ module.exports = class Post extends MongoDocument {
     this.title = data.title;
     this.body = data.body;
     this.author = data.author;
+    this.image = data.image;
     this._id = data._id;
     this.collection = "posts";
   }

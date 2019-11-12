@@ -4,6 +4,7 @@ const http = require("http");
 const router = require("./router");
 const cookieParser = require("cookie-parser");
 const app = express();
+const bodyParser = require("body-parser");
 
 app.use(cookieParser());
 
@@ -12,8 +13,8 @@ var porta = process.env.PORT || 3000;
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 app.use(express.static("public"));
 
 app.use("/", router);
