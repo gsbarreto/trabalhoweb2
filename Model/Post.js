@@ -9,7 +9,7 @@ module.exports = class Post extends MongoDocument {
     this.collection = "posts";
   }
 
-  static find(query = {}, limit = 5) {
+  static find(query = {}, limit = 50) {
     return super.find(query, { name: 1 }, limit, "posts").then(result => {
       return result.map(u => new Post(u));
     });

@@ -10,22 +10,13 @@
 
 <body>
     <form action="/cadastro" method="post">
+        <h1>ERRO!</h1>
         <ul>
             {{#each mensagem as |erro|}}
             <li>{{erro}}</li>
             {{/each}}
         </ul>
-        <label for="name">Digite seu nome</label>
-        <input type="text" name="name">
-        <label for="email">Digite seu email</label>
-        <input type="email" name="email">
-        <label for="username">Digite um nome de usuário</label>
-        <input type="text" name="username">
-        <label for="password">Digite uma senha</label>
-        <input type="password" name="password">
-        <label for="password2">Repita a senha</label>
-        <input type="password" name="password2">
-        <button type="submit">Enviar</button>
+        <a href="/login">Logar na plataforma</a>
     </form>
 </body>
 

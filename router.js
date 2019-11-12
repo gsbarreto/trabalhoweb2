@@ -7,19 +7,17 @@ const jwt = require("jsonwebtoken");
 var mongo = require("mongodb");
 const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    console.log("Destination", file);
-    cb(null, "/public/uploads/");
+let storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, "./public/imagens/");
   },
-
-  filename: (req, file, cb) => {
-    console.log("Filename", file);
-    cb(null, Date.now() + "-" + file.originalname);
+  filename: function(req, file, callback) {
+    callback(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
   }
 });
-
-const upload = multer({ storage });
 
 const segredo = "ffb22dc9665a677bcbd8fa2bc668e646";
 const segredoAdmin = "818121610e1b3dd2f7d2d83c7918bc19";
@@ -38,18 +36,53 @@ function verifyJWT(req, res, next) {
 
 function verifyJWTAdmin(req, res, next) {
   var token = req.cookies && req.cookies.admin ? req.cookies.admin : undefined;
-  if (!token) return res.status(401).send("Usuário sem permissão");
+  if (!token)
+    return res
+      .status(401)
+      .render("error", { mensagem: ["Usuário não logado"] });
 
   jwt.verify(token, segredoAdmin, function(err, decoded) {
-    if (err) return res.status(500).send("Usuário sem permissão");
-
+    if (err) {
+      res.clearCookie("admin");
+      res.clearCookie("userid");
+      res.clearCookie("token");
+      return res
+        .status(500)
+        .render("error", { mensagem: ["Usuário não logado"] });
+    }
     req.userId = decoded.id;
     next();
   });
 }
 
 router.get("/", (req, res) => {
-  res.render("index");
+  if (req.query.search) {
+    PostDAO.find({ title: new RegExp(req.query.search) }).then(async items => {
+      await Promise.all(
+        items.map(async post => {
+          const author = await UserDAO.find({
+            _id: new mongo.ObjectID(post.author)
+          });
+          post.author = author[0].name;
+        })
+      );
+
+      res.render("index", { items });
+    });
+  } else {
+    PostDAO.find({}).then(async items => {
+      await Promise.all(
+        items.map(async post => {
+          const author = await UserDAO.find({
+            _id: new mongo.ObjectID(post.author)
+          });
+          post.author = author[0].name;
+        })
+      );
+
+      res.render("index", { items });
+    });
+  }
 });
 
 router.route("/admin").get(verifyJWTAdmin, (req, res) => {
@@ -68,6 +101,33 @@ router.route("/admin").post(verifyJWT, (req, res) => {
     if (req.cookies.userid === "" || req.cookies.userid === null) {
       mensagem.push("Author não informado!");
     }
+
+    if (req.body.imagem !== undefined && req.body.imagem !== "") {
+      let upload = multer({
+        storage: storage,
+        fileFilter: function(req, file, callback) {
+          let ext = path.extname(file.originalname);
+          if (
+            ext !== ".png" &&
+            ext !== ".jpg" &&
+            ext !== ".gif" &&
+            ext !== ".jpeg"
+          ) {
+            return callback(
+              res.end("Por favor, coloque apenas imagens!"),
+              null
+            );
+          }
+          const nomearquivo = file.originalname;
+          callback(null, true);
+        }
+      }).single("imagem");
+
+      upload(req, res, () => {
+        console.log("UPADO", req.file);
+      });
+    }
+
     if (mensagem.length > 0) {
       res.render("admin", { mensagem });
     } else {
@@ -80,7 +140,7 @@ router.route("/admin").post(verifyJWT, (req, res) => {
       });
 
       newPost.save().then(user => {
-        res.redirect("/feed");
+        res.redirect("/login");
       });
     }
   }
@@ -90,41 +150,9 @@ router.get("/cadastro", (req, res) => {
   res.render("cadastro");
 });
 
-router.route("/feed").get(verifyJWT, (req, res) => {
-  if (req.query.search) {
-    PostDAO.find({ title: new RegExp("\\b" + req.query.search + "\\b") }).then(
-      async items => {
-        await Promise.all(
-          items.map(async post => {
-            const author = await UserDAO.find({
-              _id: new mongo.ObjectID(post.author)
-            });
-            post.author = author[0].name;
-          })
-        );
-
-        res.render("feed", { items });
-      }
-    );
-  } else {
-    PostDAO.find({}).then(async items => {
-      await Promise.all(
-        items.map(async post => {
-          const author = await UserDAO.find({
-            _id: new mongo.ObjectID(post.author)
-          });
-          post.author = author[0].name;
-        })
-      );
-
-      res.render("feed", { items });
-    });
-  }
-});
-
 router.get("/login", (req, res) => {
   if (req.cookies.token) {
-    res.redirect("/feed");
+    res.redirect("/");
   } else {
     res.render("login");
   }
@@ -175,7 +203,7 @@ router.post("/login", (req, res) => {
             res.cookie("admin", tokenAdmin);
           }
 
-          res.status(200).redirect("/feed");
+          res.status(200).redirect("/admin");
         } else {
           res.render("login", {
             mensagem: ["Dados de login incorretos!"]

@@ -22,15 +22,15 @@
       <ul class="first-menu">
         <li><a href="#">Docs</a></li>
         <li><a href="#">Tutorial</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Community</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
       </ul>
-      <form action="" class="search">
-        <input type="text" placeholder="Search" />
+      <form action="/" method="get" class="search">
+        <input type="text" name="search" placeholder="Search" />
       </form>
       <ul class="last-menu">
         <li><a href="#">v16.9.0</a></li>
-        <li><a href="#">Languages</a></li>
+        <li><a href="/admin">Administrativo</a></li>
         <li><a href="#">GitHub</a></li>
       </ul>
     </div>
@@ -88,82 +88,24 @@
   </div>
   <div class="box-code">
     <div class="row-code">
+      {{#each items as |item|}}
       <div class="box">
         <div>
-          <span>A Simple Component</span>
+          <span>{{item.title}}</span>
           <p>
-            React components implement a render() method that takes input data
-            and returns what to display. This example uses an XML-like syntax
-            called JSX. Input data that is passed into the component can be
-            accessed by render() via this.props.
+            By : {{item.author}}
           </p>
           <p>
-            JSX is optional and not required to use React. Try the Babel REPL
-            to see the raw JavaScript code produced by the JSX compilation
-            step.
+            {{item.body}}
           </p>
         </div>
         <div>
-          <img src="./imgs/code.png" alt="Code" />
+          {{#if item.img}}
+          <img src={{item.img}} alt="Code" />
+          {{/if}}
         </div>
       </div>
-      <div class="box">
-        <div>
-          <span>A Simple Component</span>
-          <p>
-            React components implement a render() method that takes input data
-            and returns what to display. This example uses an XML-like syntax
-            called JSX. Input data that is passed into the component can be
-            accessed by render() via this.props.
-          </p>
-          <p>
-            JSX is optional and not required to use React. Try the Babel REPL
-            to see the raw JavaScript code produced by the JSX compilation
-            step.
-          </p>
-        </div>
-        <div>
-          <img src="./imgs/code.png" alt="Code" />
-        </div>
-      </div>
-      <div class="box">
-        <div>
-          <span>A Simple Component</span>
-          <p>
-            React components implement a render() method that takes input data
-            and returns what to display. This example uses an XML-like syntax
-            called JSX. Input data that is passed into the component can be
-            accessed by render() via this.props.
-          </p>
-          <p>
-            JSX is optional and not required to use React. Try the Babel REPL
-            to see the raw JavaScript code produced by the JSX compilation
-            step.
-          </p>
-        </div>
-        <div>
-          <img src="./imgs/code.png" alt="Code" />
-        </div>
-      </div>
-      <div class="box">
-        <div>
-          <span>A Simple Component</span>
-          <p>
-            React components implement a render() method that takes input data
-            and returns what to display. This example uses an XML-like syntax
-            called JSX. Input data that is passed into the component can be
-            accessed by render() via this.props.
-          </p>
-          <p>
-            JSX is optional and not required to use React. Try the Babel REPL
-            to see the raw JavaScript code produced by the JSX compilation
-            step.
-          </p>
-        </div>
-        <div>
-          <img src="./imgs/code.png" alt="Code" />
-        </div>
-      </div>
+      {{/each}}
     </div>
   </div>
   <div class="sub-footer">

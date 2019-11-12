@@ -33,9 +33,9 @@
 <body>
     <h1>Painel de administração</h1>
 
-    <a href="/feed">Ir para o Feed</a>
+    <a href="/">Ir para pagina inicial</a>
     <a href="/logout">Logout</a>
-    <form action="/admin" method="post" ectype="multipart/form-data">
+    <form action="/admin" method="post" enctype="multipart/form-data">
         {{#if mensagem}}
         <ul class="erro">
             <h3>Erro</h3>
@@ -48,6 +48,8 @@
         <input type="text" name="title">
         <label for="body">Digite o corpo do post</label>
         <textarea name="body" id="" cols="30" rows="10"></textarea>
+        <label for="imagem">Coloque uma imagem</label>
+        <input type="file" name="imagem" accept="image/*">
         <button type="submit">Enviar</button>
     </form>
 </body>
