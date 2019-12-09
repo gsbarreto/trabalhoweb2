@@ -4,6 +4,20 @@
   font-family: "Ubuntu", "Roboto", sans-serif;
 }
 
+.loading {
+  position: absolute;
+  background: rgba(153, 153, 153, 0.466);
+  height: 100%;
+  width: 100%;
+  z-index: 1001;
+  display: none;
+  align-items: center;
+}
+
+.loading > img {
+  margin: 0 auto;
+}
+
 nav {
   height: 60px;
   width: 100%;
@@ -59,9 +73,9 @@ nav {
 
 .search {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   margin-right: 10px;
   margin-left: 5px;
   font-size: 30px;
@@ -89,6 +103,25 @@ nav {
   padding: 2px;
   border-radius: 4px;
   background-color: #373940;
+}
+
+.search > ul {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin-top: 42px;
+  width: 308px;
+}
+
+.search > ul > li {
+  color: #20232a;
+  width: 90%;
+  background-color: white;
+  font-size: 18px;
+  color: #20232a;
+  border: 5px;
+  height: 30px;
+  border-bottom: 1px solid #20232a;
 }
 
 .first-menu li a {

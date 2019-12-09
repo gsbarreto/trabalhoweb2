@@ -11,6 +11,9 @@
 </head>
 
 <body>
+  <div class="loading">
+    <img src="/imgs/loading.svg" alt="">
+  </div>
   <nav>
     <div class="container navbar">
       <div class="logo">
@@ -26,7 +29,9 @@
         <li><a href="/logout">Logout</a></li>
       </ul>
       <form action="/" method="get" class="search">
-        <input type="text" name="search" placeholder="Search" />
+        <input type="text" name="search" placeholder="Search" id="search-input" />
+        <ul id="search-links">
+        </ul>
       </form>
       <ul class="last-menu">
         <li><a href="#">v16.9.0</a></li>
@@ -152,6 +157,8 @@
       <a href="#">React Native</a>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+  <script src="/index.js"></script>
 </body>
 
 </html>

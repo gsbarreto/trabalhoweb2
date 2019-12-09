@@ -87,6 +87,27 @@ router.get("/", (req, res) => {
   }
 });
 
+router.get("/busca", (req, res) => {
+  if (req.query.parametro && req.query.parametro.length >= 3) {
+    PostDAO.find({ title: new RegExp(req.query.parametro) }).then(
+      async items => {
+        await Promise.all(
+          items.map(async post => {
+            const author = await UserDAO.find({
+              _id: new mongo.ObjectID(post.author)
+            });
+            post.author = author[0].name;
+          })
+        );
+
+        res.send(items).toJSON();
+      }
+    );
+  } else {
+    res.sendStatus(500);
+  }
+});
+
 router.route("/admin").get(verifyJWTAdmin, (req, res) => {
   res.render("admin", { user: req.cookies.userid });
 });
