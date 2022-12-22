@@ -18,7 +18,7 @@
     "express-handlebars": "^3.1.0",
     "handlebars": "^4.5.1",
     "hbs": "^4.0.6",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "jwt-simple": "^0.5.6",
     "md5": "^2.2.1",
     "moment": "^2.24.0",
